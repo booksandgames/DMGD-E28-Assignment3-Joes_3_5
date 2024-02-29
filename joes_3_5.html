@@ -1,0 +1,266 @@
+<html>
+  <head>
+    <title>Joe's Hotdogs</title>
+    <style>
+      .title {
+        text-align: center;
+        font-weight: bold;
+        font-size: 30px;
+      }
+      h1 {
+        text-decoration: underline;
+      }
+      #innerMenuContainer2 {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .menuItemContainer {
+        border-top: 3px solid brown;
+        border-left: 3px solid brown;
+        border-right: 3px solid brown;
+        display: flex;
+        width: 215px;
+      }
+      #sauerkrautMenuItemContainer {
+        border-bottom: 3px solid brown;
+      }
+      .menuItem {
+        width: 100px;
+        padding: 20px;
+        display: flex;
+        justify-content: center;
+        background-color: lightyellow;
+      }
+      .menuPrice {
+        padding: 20px;
+        border-left: 3px solid brown;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: rgb(243, 152, 152);
+      }
+      button {
+        border-radius: 20px;
+        padding: 5px;
+        background-color: lightyellow;
+      }
+      button:hover {
+        background-color: rgb(243, 152, 152);
+      }
+      #checkoutInfoContainer {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      #shoppingCart {
+        border: 3px solid brown;
+        background-color: lightyellow;
+        padding: 15px;
+      }
+      #shoppingCartTitle {
+        text-align: center;
+        font-weight: bold;
+        font-size: 22px;
+      }
+      #hotdogShoppingCart,
+      #friesShoppingCart,
+      #sodaShoppingCart,
+      #sauerkrautShoppingCart {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <h1 class="title">Joe's Hotdogs</h1>
+    <script>
+      // Representing the items using an associative array
+      const menuAssociativeArr = [];
+      menuAssociativeArr['hotdog'] = 4;
+      menuAssociativeArr['fries'] = 3.5;
+      menuAssociativeArr['soda'] = 1.5;
+      menuAssociativeArr['sauerkraut'] = 1;
+
+      // Representing the items using a JSON object
+      const menuJsonObj = {
+        hotdog: 4,
+        fries: 3.5,
+        soda: 1.5,
+        sauerkraut: 1,
+      };
+
+      // Representing the items using a function object
+      function MenuItems(name, price, strPrice) {
+        this.name = name;
+        this.price = price;
+        this.strPrice = strPrice;
+        this.createDiv = () =>
+          `<div class='menuItemContainer' id=${
+            this.name.toLowerCase() + 'MenuItemContainer'
+          }><div class='menuItem' id=${this.name + '2'}>${
+            this.name
+          }</div><div class='menuPrice' id=${this.name + 'Price' + '2'}>${
+            '$' + this.strPrice
+          }</div></div>`;
+      }
+
+      const hotdog = new MenuItems('Hotdog', 4, '4.00');
+      const fries = new MenuItems('Fries', 3.5, '3.50');
+      const soda = new MenuItems('Soda', 1.5, '1.50');
+      const sauerkraut = new MenuItems('Sauerkraut', 1, '1.00');
+
+      const arrFuncObj = [hotdog, fries, soda, sauerkraut];
+
+      // Display a menu of items on the page using the array of objects
+      document.write(
+        `<div class='menuContainer' id='menuContainer2'><div class='title' id='menuTitle2'>Menu</div><br /><div id='innerMenuContainer2'></div></div><br />`
+      );
+      const menuFuncObj = arrFuncObj.map((menuItem) => menuItem.createDiv());
+      const innerMenuContainer2 = document.getElementById(
+        'innerMenuContainer2'
+      );
+      innerMenuContainer2.innerHTML += menuFuncObj.join('');
+    </script>
+    <br />
+    <div id="checkoutInfoContainer">
+      <div id="addItemContainer">
+        <label>Write the name of the next item you would like to order: </label>
+        <input type="text" name="addedItem" id="addedItem" />
+        <button id="addToCartButton">Add to Cart</button>
+      </div>
+      <br />
+      <div id="shoppingCart">
+        <div id="shoppingCartTitle">Shopping Cart</div>
+        <br />
+        <div id="emptyShoppingCart">Your cart is currently empty</div>
+        <br />
+        <div id="hotdogShoppingCart">
+          Hotdogs: <span id="hotdogQuant">0</span>
+        </div>
+        <br />
+        <div id="friesShoppingCart">Fries: <span id="friesQuant">0</span></div>
+        <br />
+        <div id="sodaShoppingCart">Soda: <span id="sodaQuant">0</span></div>
+        <br />
+        <div id="sauerkrautShoppingCart">
+          Sauerkraut: <span id="sauerkrautQuant">0</span>
+        </div>
+      </div>
+      <br />
+      <button id="checkoutButton">Checkout</button>
+    </div>
+    <script>
+      const cartQuantities = [];
+      cartQuantities['hotdog'] = 0;
+      cartQuantities['fries'] = 0;
+      cartQuantities['soda'] = 0;
+      cartQuantities['sauerkraut'] = 0;
+
+      const addToCartButton = document.getElementById('addToCartButton');
+
+      let cartEmpty = true;
+
+      const addItemToCart = (userInput) => {
+        const itemToAdd = userInput.toLowerCase();
+        if (cartQuantities[itemToAdd] === undefined)
+          alert(
+            "Unfortunately, we don't offer that item at our store.  Please type the name of one of the items on our menu to add it to your cart."
+          );
+        else {
+          cartQuantities[itemToAdd] += 1;
+          const addedItemDiv = document.getElementById(
+            itemToAdd + 'ShoppingCart'
+          );
+          if (cartEmpty) {
+            cartEmpty = false;
+            const emptyTextLine = document.getElementById('emptyShoppingCart');
+            emptyTextLine.style.display = 'none';
+          }
+          addedItemDiv.style.display = 'block';
+          let currentQuant = Number(
+            document.getElementById(itemToAdd + 'Quant').innerText
+          );
+          currentQuant += 1;
+          document.getElementById(itemToAdd + 'Quant').innerText = currentQuant;
+        }
+      };
+
+      addToCartButton.addEventListener('click', function () {
+        const addedItem = document.getElementById('addedItem').value;
+        addItemToCart(addedItem);
+      });
+
+      const checkQuant = (num, item, itemTotal) => {
+        if (num === 0) return '';
+        else if (item === 'hotdog' && num > 1)
+          return `You have ordered ${num} hotdogs which costs $${itemTotal}. `;
+        else if (item === 'soda' && num > 1)
+          return `You have ordered ${num} sodas which costs $${itemTotal}. `;
+        else
+          return `You have ordered ${num} ${item} which costs $${itemTotal}. `;
+      };
+
+      const fixDecimals = (num) => {
+        strNum = String(num);
+        if (
+          strNum.indexOf('.') + 3 === strNum.length &&
+          strNum.indexOf('.') !== -1
+        )
+          return strNum;
+        else if (
+          strNum.indexOf('.') + 2 === strNum.length &&
+          strNum.indexOf('.') !== -1
+        )
+          return strNum + '0';
+        else return strNum + '.00';
+      };
+
+      const clearCart = () => {
+        for (key in cartQuantities) {
+          if (cartQuantities[key] !== 0) {
+            cartQuantities[key] = 0;
+            const displayedLine = document.getElementById(key + 'ShoppingCart');
+            displayedLine.style.display = 'none';
+            const capitalizedLetter = key[0].toUpperCase();
+            const capitalizedKey = capitalizedLetter + key.substring(1);
+            displayedLine.innerHTML =
+              capitalizedKey + ': ' + `<span id=${key + 'Quant'}>0</span>`;
+          }
+        }
+        cartEmpty = true;
+        const emptyTextLine = document.getElementById('emptyShoppingCart');
+        emptyTextLine.style.display = 'block';
+      };
+
+      const checkout = () => {
+        const hotdogCost = fixDecimals(cartQuantities['hotdog'] * 4);
+        const friesCost = fixDecimals(cartQuantities['fries'] * 3.5);
+        const sodaCost = fixDecimals(cartQuantities['soda'] * 1.5);
+        const sauerkrautCost = fixDecimals(cartQuantities['sauerkraut']);
+        const totalCost = fixDecimals(
+          Number(hotdogCost) +
+            Number(friesCost) +
+            Number(sodaCost) +
+            Number(sauerkrautCost)
+        );
+        let alertStr = '';
+        alertStr += checkQuant(cartQuantities['hotdog'], 'hotdog', hotdogCost);
+        alertStr += checkQuant(cartQuantities['fries'], 'fries', friesCost);
+        alertStr += checkQuant(cartQuantities['soda'], 'soda', sodaCost);
+        alertStr += checkQuant(
+          cartQuantities['sauerkraut'],
+          'sauerkraut',
+          sauerkrautCost
+        );
+        alertStr += `The total cost for your order is $${totalCost}.`;
+        alert(alertStr);
+        clearCart();
+      };
+
+      const checkoutButton = document.getElementById('checkoutButton');
+      checkoutButton.addEventListener('click', function () {
+        checkout();
+      });
+    </script>
+  </body>
+</html>
